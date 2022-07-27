@@ -6,7 +6,7 @@ import ast
 import matplotlib.pyplot as plt
 
 
-folder = "D:/UD/RESEARCH/CODE/Test/"
+folder = "D:/UD/RESEARCH/CODE/Graphs_07-27/"
 
 
 def test_mst():
@@ -81,10 +81,12 @@ def test_mst():
 
         plt.savefig(folder + str(counter) + "_" + str(round(ratio, 3)) + ".pdf",
                     bbox_inches="tight")
+        print("File: ", folder + str(counter) + "_" + str(round(ratio, 3)) + ".pdf" + " saved "
+                                                                                      "successfully to the folder.")
         plt.clf()
         counter += 1
 
-    print("All the graphs have been saved as pdf")
+    print("\nAll the files have been saved to the folder!!")
 
 # FROM PREVIOUS VERSION OF THE CODE
     # SEL = np.array(arr)
