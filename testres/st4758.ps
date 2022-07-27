@@ -1,0 +1,342 @@
+%!PS-Adobe-3.0
+%%Creator: Steiner Tree Version 3.1
+%%Copyright: Copyright (c) 1998, 2001 by David M. Warme
+%%LanguageLevel: 1
+%%DocumentNeededResources: font Times-Roman
+%%DocumentSuppliedResources: procset SteinerTreeProcs 2.0 0
+%%EndComments
+%%BeginProlog
+%%BeginProcSet: SteinerTreeProcs 2.0 0
+/LabelTerminals	0		def	% set non-zero to label terminals
+/inch { 72 mul } def
+/PaperWidth	8.5 inch	def
+/PaperHeight	11 inch		def
+/BigBoxSize	7 inch		def
+/SmallBoxSize	2 inch		def
+/SmallBoxHeight	SmallBoxSize	def
+/SmallBoxWidth	SmallBoxSize	def
+/BoxHeight	BigBoxSize	def
+/BoxWidth	BigBoxSize	def
+/MinX		0		def
+/MaxX		1		def
+/MinY		0		def
+/MaxY		1		def
+/BoxMode	0		def	% (0 ==> big plot, 1 ==> small plots)
+/SmallBoxCount	0		def
+/TermRadius	1 32 div inch	def
+/LineWidth	currentlinewidth	def
+
+% Define the clipping region to be the inside edge of the box.
+
+/ClipHeight	BigBoxSize LineWidth sub def
+/ClipWidth	ClipHeight def
+
+% Define the plotting region so that points plotted at the extremes will
+% exactly meet the edge of the clipping region.  (Reduce by the terminal
+% radius on each side.)
+
+/PlotHeight	ClipHeight TermRadius 2 mul sub def
+/PlotWidth	ClipWidth  TermRadius 2 mul sub	def
+/XlateX { MinX sub MaxX MinX sub div PlotWidth mul } def
+/XlateY { MinY sub MaxY MinY sub div PlotHeight mul } def
+/XlateXY { exch XlateX exch XlateY } def
+/Dup2 { dup 3 -1 roll dup 4 1 roll exch } def
+/Swap2 { 4 2 roll } def
+% define the two fonts we will use:
+%	- one for numbering the terminals
+%	- one for printing the plot's title
+/TermNumPointsize	8	def
+/TitlePointsize		15	def
+/TermNumFont
+	/Times-Roman findfont TermNumPointsize scalefont
+def
+/UseTermNumFont { TermNumFont setfont } def
+/TitleFont
+	/Times-Roman findfont TitlePointsize scalefont
+def
+/UseTitleFont { TitleFont setfont } def
+/DefineTerminals {
+	/NumTerms exch def
+	/TermX NumTerms array def
+	/TermY NumTerms array def
+	/TermIndex 0 def
+} def
+/DT {
+	TermY TermIndex 3 -1 roll put
+	TermX TermIndex 3 -1 roll put
+	/TermIndex TermIndex 1 add def
+} def
+/SetAxes {	% minx maxx miny maxy
+	/MaxY exch def
+	/MinY exch def
+	/MaxX exch def
+	/MinX exch def
+} def
+/PTString	12 string	def
+/Plot_Terminals {
+	LabelTerminals 0 eq {
+		% Display terminals, no labels
+		0 1 NumTerms 1 sub {			% i
+			dup				% i i
+			TermX exch get exch		% x i
+			TermY exch get
+			newpath
+			XlateXY
+			TermRadius 0 360 arc fill
+		} for
+	}
+	{	% Display terminals, with labels
+		0 1 NumTerms 1 sub {			% i
+			dup				% i i
+			PTString cvs exch dup		% str i i
+			TermX exch get exch		% str x i
+			TermY exch get			% str x y
+			newpath
+			XlateXY
+			Dup2
+			TermRadius 0 360 arc fill
+			moveto TermRadius 3 mul dup neg rmoveto
+			UseTermNumFont
+			show
+		} for
+	} ifelse
+} def
+% n T ==> Xn Yn, get coordinates of terminal n.
+/T {
+	dup
+	TermX exch get exch
+	TermY exch get
+} def
+% Draw a line segment.
+/S {
+	newpath
+	XlateXY
+	moveto
+	XlateXY
+	lineto
+	stroke
+} def
+% Draw a corner.  First point is incident to vertical segment.
+% Second point is incident to horizontal segment.
+/C {	% x1 y1 x2 y2
+	newpath
+	% x1 y1 x2 y2 -> x1 y1 x1 y2 x2 y2
+	4 -1 roll dup 5 1 roll exch dup 4 -1 roll exch
+	XlateXY
+	moveto
+	XlateXY
+	lineto
+	XlateXY
+	lineto
+	stroke
+} def
+/BeginPlot {
+	FlushSmallPlot
+	gsave
+	PaperWidth BoxWidth sub 2 div
+	 PaperHeight BoxHeight sub 2 div
+	  translate
+	newpath
+	0 0 moveto
+	BoxWidth 0 lineto
+	BoxWidth BoxHeight lineto
+	0 BoxHeight lineto
+	closepath
+	stroke
+	gsave
+	% establish a clipping region at the inside edge of the box
+	LineWidth 2 div dup moveto
+	ClipWidth 0 rlineto
+	0 ClipHeight rlineto
+	ClipWidth neg 0 rlineto
+	closepath
+	clip
+	% establish the origin for the plotting region
+	LineWidth 2 div TermRadius add
+	 dup
+	  translate
+} def
+/EndPlot {
+	grestore
+	newpath
+	UseTitleFont
+	0 0 moveto
+		dup stringwidth pop BigBoxSize exch sub 2 div
+		TitlePointsize -2 mul
+	rmoveto
+	show
+	grestore
+	showpage
+} def
+/BeginSmallPlot {
+	gsave
+	.75 inch SmallBoxCount 3 mod SmallBoxWidth .5 inch add mul add
+	  .75 inch 3 SmallBoxCount 3 idiv sub SmallBoxHeight .5 inch add mul add
+	    translate
+	SmallBoxWidth BoxWidth div
+	 SmallBoxHeight BoxHeight div
+	  scale
+	newpath
+	0 0 moveto
+	BoxWidth 0 lineto
+	BoxWidth BoxHeight lineto
+	0 BoxHeight lineto
+	closepath
+	stroke
+	gsave
+	% establish a clipping region at the inside edge of the box
+	LineWidth 2 div dup moveto
+	ClipWidth 0 rlineto
+	0 ClipHeight rlineto
+	ClipWidth neg 0 rlineto
+	closepath
+	clip
+	% establish the origin for the plotting region
+	LineWidth 2 div TermRadius add
+	 dup
+	  translate
+} def
+/EndSmallPlot2 {
+	grestore
+	newpath
+	UseTitleFont
+	0 0 moveto
+		dup stringwidth pop BigBoxSize exch sub 2 div
+		TitlePointsize -2 mul
+	rmoveto
+	show
+	grestore
+	/SmallBoxCount SmallBoxCount 1 add def
+	SmallBoxCount 12 ge {
+		FlushSmallPlot
+	} if
+} def
+/FlushSmallPlot {
+	SmallBoxCount 0 gt {
+		showpage
+		/SmallBoxCount	0 def
+	} if
+} def
+/PT {
+	dup				% i i
+	TermX exch get exch		% x i
+	TermY exch get
+	newpath
+	XlateXY
+	TermRadius 0 360 arc fill
+} def
+%%EndProcSet
+%%EndProlog
+
+ % ./bb
+ % Args:
+ % Phase 1: 0.01 seconds
+
+%%BeginSetup
+
+0 1 0 1 SetAxes
+
+10 DefineTerminals
+	.1572277545928955	.1718975901603698	DT
+	.6218722462654114	.0629261732101440	DT
+	.0597922205924987	.2404453754425048	DT
+	.1300421953201293	.7723393440246581	DT
+	.6130820512771606	.0214055180549621	DT
+	.6677029132843017	.9960299134254456	DT
+	.7680751681327820	.6333165764808654	DT
+	.5320267677307128	.7654073834419250	DT
+	.2412242293357848	.5352713465690613	DT
+	.2248525619506835	.9843688607215881	DT
+
+%%EndSetup
+
+ % initialize_constraint_pool: 0.00 seconds.
+ % Constraint pool initialized with:
+ %	1	Total degree rows	22	coeffs.
+ %	10	Cutset rows		62	coeffs.
+ %	0	Incompatibility rows	0	coeffs.
+ %	18	2-terminal SEC rows	60	coeffs.
+ %	29	Total rows in pool	11	in LP
+ % @PMEM 29 rows, 1 blocks, 403 nzfree, 0 nzwasted, 576 nztotal
+ % build_initial_formulation: 0.00 seconds.
+% Resuming node 0
+  % @PAP adding 11 rows, 84 nz to LP
+  % @PL 11 rows, 22 cols, 106 nonzeros, 4 slack, 7 tight.
+  % @PAP adding 2 rows, 5 nz to LP
+  % @PL 13 rows, 22 cols, 111 nonzeros, 6 slack, 7 tight.
+  % @PAP adding 4 rows, 17 nz to LP
+  % @PL 17 rows, 22 cols, 128 nonzeros, 3 slack, 14 tight.
+  % @PAP adding 1 rows, 5 nz to LP
+  % @PL 18 rows, 22 cols, 133 nonzeros, 3 slack, 15 tight.
+  % @PAP adding 1 rows, 2 nz to LP
+  % @PL 19 rows, 22 cols, 135 nonzeros, 3 slack, 16 tight.
+  % @PAP adding 1 rows, 5 nz to LP
+  % @PL 20 rows, 22 cols, 140 nonzeros, 2 slack, 18 tight.
+  % @PAP adding 1 rows, 5 nz to LP
+  % @PL 21 rows, 22 cols, 145 nonzeros, 4 slack, 17 tight.
+  % Node 0 LP 1 Solution, length = 220649911728590.593750, 0.00 0
+ % 0 fractional variables
+ % @LO 0.00   2.20649911728590586435 99.9000000000
+ % @LN 0.00   2.20649911728590586435 99.9000000000
+ % @UO 0.00   2.30530902992550990049 4.2861894591
+ % @UN 0.00   2.30530902992550990049 4.2861894591
+ % Fixed 3 vars to 0 and 0 vars to 1.
+ % @cutset: 2 connected components.
+ % initially 3 congested vertices:
+ % find_congested_components found 1 components:
+ %	component 0:	3 verts,	3 edges
+ % @D deleting 4 slack rows
+  % @PAP adding 2 rows, 12 nz to LP
+ % @PMEM 31 rows, 1 blocks, 389 nzfree, 0 nzwasted, 576 nztotal
+  % @PL 19 rows, 22 cols, 122 nonzeros, 1 slack, 18 tight.
+  % Node 0 LP 2 Solution, length = 230530902992550.937500, 0.00/0.00/0.00/0.00/0.00/0.00/0.00 2
+ % 0 fractional variables
+ % @UO 0.00   2.30530902992550990049 4.2861894591
+ % @UN 0.00   2.30530902992550945640 4.2861894591
+  % *     0     0230530902992550.9375230530902992550.9375
+ % @LO 0.00   2.20649911728590586435 4.2861894591
+ % @LN 0.00   2.30530902992550945640 0.0000000000
+
+ % Certificate of solution:
+ % @C	.6062933623918485	.0476015820699181
+ % @C	.1061829913085373	.2445720002002504
+ % @C	.6127223939155351	.7873882094898712
+ % @C	.1772934821997730	.7863322091421721
+ % @C	.2784587652895416	.6903164580812158
+%%Page: 1 1
+BeginPlot
+	Plot_Terminals
+ % fs1: 4 0 1
+	4 T	.6062933623918485	.0476015820699181	S
+	.6062933623918485	.0476015820699181	0 T	S
+	.6062933623918485	.0476015820699181	1 T	S
+ % fs2: 8 0 2
+	8 T	.1061829913085373	.2445720002002504	S
+	.1061829913085373	.2445720002002504	0 T	S
+	.1061829913085373	.2445720002002504	2 T	S
+ % fs4: 7 5 6
+	7 T	.6127223939155351	.7873882094898712	S
+	.6127223939155351	.7873882094898712	5 T	S
+	.6127223939155351	.7873882094898712	6 T	S
+ % fs11: 9 7 8 3
+	9 T	.1772934821997730	.7863322091421721	S
+	.1772934821997730	.7863322091421721	.2784587652895416	.6903164580812158	S
+	.2784587652895416	.6903164580812158	7 T	S
+	.2784587652895416	.6903164580812158	8 T	S
+	.1772934821997730	.7863322091421721	3 T	S
+  (Steiner Minimal Tree:  10 points,  length = 2.305309029925509,  0.01 seconds)
+EndPlot
+
+% @0 
+% N M Nodes LPs P1CPU P2CPU TotCPU
+% @1 10 22 1 2 0.01 0.00 0.01
+% Z RootZ %Gap RootLPs RootCPU RedMST
+% @2 2.305309029925509 2.305309 0.00000 2 0.00 3.4638
+% InitPRows InitPNZ InitLPRows InitLPNZ
+% @3 29 144 11 106
+% RootPRows RootPNZ RootLPRows RootLPNZ
+% @4 31 156 19 122
+% FinalPRows FinalPNZ FinalLPRows FinalLPNZ
+% @5 31 156 19 122
+% SMTFSTs SMTAvgFSTSz SMTMaxFSTSz #2FSTs #3FSTs ... #10FSTS #>10FSTs
+% @6 4 3.250000 4 0 3 1 0 0 0 0 0 0 0
