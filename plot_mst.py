@@ -6,62 +6,80 @@ import ast
 import matplotlib.pyplot as plt
 
 
+folder = "D:/UD/RESEARCH/CODE/Test/"
+
+
 def test_mst():
     # READING THE FILE
-    with open("selecte_a.txt") as f1:
+    with open("DEEP-Steiner.txt") as f1:
         temp_1 = f1.readlines()
     # REMOVING ALL THE NEW LINE CHARACTERS
     l_1 = [x[:-1] for x in temp_1]
 
     # READING THE FILE
-    with open("origin_a.txt") as f2:
+    with open("MST.txt") as f2:
         temp_2 = f2.readlines()
     # REMOVING ALL THE NEW LINE CHARACTERS
     l_2 = [x[:-1] for x in temp_2]
 
-    # COUNTER IS USED TO NAME THE PDF FILES
+    # READING THE FILE
+    with open("STM.txt") as f3:
+        temp_3 = f3.readlines()
+    # REMOVING ALL THE NEW LINE CHARACTERS
+    l_3 = [x[:-1] for x in temp_3]
+
+    # USED TO NAME THE PDF FILES
     counter = 1
 
-    # GETS THE LAST 10000 ENTRIES
-    for _ in range(20001, 30001):
+    for _ in range(0, 5):
         # CONVERTING FROM STRING TO LIST
         line_1 = ast.literal_eval(l_1[_])
         line_2 = ast.literal_eval(l_2[_])
+        line_3 = ast.literal_eval(l_3[_])
 
         # CONVERTING THE LIST TO NP ARRAY
-        SEL = np.array(line_1)
-        ORI = np.array(line_2)
+        DST = np.array(line_1)
+        MST = np.array(line_2)
+        STM = np.array(line_3)
 
         # GETTING THE MIN_WEIGHT FOR EACH ENTRY AND RATIO
-        min_w_1 = mst_instance(SEL)
-        min_w_2 = mst_instance(ORI)
-        ratio = min_w_1 / min_w_2
+        min_w_1 = mst_instance(DST)
+        # min_w_2 = mst_instance(MST)
+        min_w_3 = mst_instance(STM)
+
+        ratio = min_w_1 / min_w_3
 
         # GETTING THE DISTANCE MATRIX
-        X = euc_dist_mat(SEL)
-        X1 = euc_dist_mat(ORI)
+        X = euc_dist_mat(DST)
+        X1 = euc_dist_mat(MST)
+        X2 = euc_dist_mat(STM)
 
         # GETTING THE EDGE LIST
         edge_list = draw_mst(X)
         edge_list_1 = draw_mst(X1)
+        edge_list_2 = draw_mst(X2)
 
         # PLOTTING THE COORDINATES FROM THE NP ARRAY WE HAVE
-        plt.scatter(SEL[:, 0], SEL[:, 1], label="SEL", c='r')
-        plt.scatter(ORI[:, 0], ORI[:, 1], label="ORI", c='b')
+        plt.scatter(DST[:, 0], DST[:, 1], label="DST", c='r')
+        plt.scatter(MST[:, 0], MST[:, 1], label="MST", c='b')
+        plt.scatter(STM[:, 0], STM[:, 1], label="STM", c='g')
 
-        plt.legend(bbox_to_anchor=(0.65, 1.13), ncol=2)
+        plt.legend(bbox_to_anchor=(0.77, 1.13), ncol=3)
         plt.xlabel("X")
         plt.ylabel("Y")
 
         # JOINING THE COORDINATES WITH LINES USING THE EDGE LIST
         for edge in edge_list:
             i, j = edge
-            plt.plot([SEL[i, 0], SEL[j, 0]], [SEL[i, 1], SEL[j, 1]], c='r')
+            plt.plot([DST[i, 0], DST[j, 0]], [DST[i, 1], DST[j, 1]], c='r')
         for edge in edge_list_1:
             i, j = edge
-            plt.plot([ORI[i, 0], ORI[j, 0]], [ORI[i, 1], ORI[j, 1]], c='b')
+            plt.plot([MST[i, 0], MST[j, 0]], [MST[i, 1], MST[j, 1]], c='b')
+        for edge in edge_list_2:
+            i, j = edge
+            plt.plot([STM[i, 0], STM[j, 0]], [STM[i, 1], STM[j, 1]], c='g')
 
-        plt.savefig("D:/UD/RESEARCH/CODE/Graphs/Graph_" + str(counter) + "_ratio_" + str(ratio) + ".pdf",
+        plt.savefig(folder + str(counter) + "_" + str(round(ratio, 3)) + ".pdf",
                     bbox_inches="tight")
         plt.clf()
         counter += 1
