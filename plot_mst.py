@@ -31,7 +31,7 @@ def test_mst():
     # USED TO NAME THE PDF FILES
     counter = 1
 
-    for _ in range(0, 5):
+    for _ in range(len(l_1)):
         # CONVERTING FROM STRING TO LIST
         line_1 = ast.literal_eval(l_1[_])
         line_2 = ast.literal_eval(l_2[_])
