@@ -26,6 +26,6 @@ for file in os.listdir(folder):
         if len(li) != 1:
             _.append([float(li[1]), float(li[2])])
     # print(_)
-    with open("test.txt", 'a') as f:
+    with open("STM.txt", 'a') as f:
         f.write(str(_) + "\n")
 print("Process Finished!!")
